@@ -3,9 +3,10 @@ const ctx = canvas.getContext('2d');
 const colors = document.getElementsByClassName('jsColor');
 const range = document.getElementById('jsRange');
 const mode = document.getElementById('jsMode');
-const saveBtn = document.getElementById("jsSave");
+const saveBtn = document.getElementById('jsSave');
+const gradient = document.querySelector('.jsGradient');
 
-const INITIAL_COLOR = "#2c2c2c";
+const INITIAL_COLOR = '#2c2c2c';
 const CANVAS_SIZE = 700;
 
 // pixel modifier
@@ -13,7 +14,7 @@ canvas.width = CANVAS_SIZE;
 canvas.height = CANVAS_SIZE;
 
 ctx.fillStyle = 'white';
-ctx.fillRect(0,0,CANVAS_SIZE,CANVAS_SIZE);
+ctx.fillRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
 ctx.strokeStyle = INITIAL_COLOR;
 ctx.fillStyle = INITIAL_COLOR;
 ctx.lineWidth = 2.5;
@@ -44,7 +45,7 @@ const onMouseMove = (e) => {
 
 const handleColorClick = (e) => {
   // console.log(e.target.style);
-  const color = e.target.style.backgroundColor;
+  const color = e.target.style.background;
   // console.log(color);
   ctx.strokeStyle = color;
   ctx.fillStyle = color;
@@ -67,24 +68,44 @@ const handleModeClick = () => {
 };
 
 const handleCanvasClick = () => {
-  if(filling) {
-    ctx.fillRect(0,0,CANVAS_SIZE,CANVAS_SIZE);
+  if (filling) {
+    ctx.fillRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
   }
-}
+};
 
-const handleCM = (e) => { // 마우스 우클릭 방지
+const handleCM = (e) => {
+  // 마우스 우클릭 방지
   e.preventDefault();
-} 
+};
 
-const handleSaveClick = () => { // 다른이름으로 저장하기
+const handleSaveClick = () => {
+  // 다른이름으로 저장하기
   const image = canvas.toDataURL('image/png');
   const link = document.createElement('a');
   link.href = image;
   // a태그의 속성 중 하나인 download
-  link.download = "PaintJS[🎨]";
+  link.download = 'PaintJS[🎨]';
   // console.log(link);
   link.click();
-}
+};
+
+// 그라디언트
+const handleGradient = (e) => {
+  if (filling) {
+    // console.log(gradient.style.background);
+    let grd = ctx.createLinearGradient(0, 0, CANVAS_SIZE, CANVAS_SIZE);
+
+    const stringColor1 = gradient.style.background.substring(16, gradient.style.background.length - 1).split('rgb')[1].substring(1, gradient.style.background.substring(16, gradient.style.background.length - 1).split('rgb')[1].length-3);
+    const stringColor2 = gradient.style.background.substring(16, gradient.style.background.length - 1).split('rgb')[2];
+
+    let grdColor1 = `rgb(${stringColor1})`;
+    let grdColor2 = `rgb${stringColor2}`;
+
+    grd.addColorStop(0, grdColor1);
+    grd.addColorStop(1, grdColor2);
+    ctx.fillStyle = grd;
+  }
+};
 
 if (canvas) {
   // canvas가 있으면
@@ -95,6 +116,7 @@ if (canvas) {
   canvas.addEventListener('mouseleave', stopPainting);
   canvas.addEventListener('mousedown', handleCanvasClick);
   canvas.addEventListener('contextmenu', handleCM); // 우클릭 방지
+  canvas.addEventListener('mousedown', handleGradient); // 그라디언트색상
 }
 
 // Array.from 메소드는 object로 부터 arrary를 만든다.
@@ -112,6 +134,6 @@ if (mode) {
   mode.addEventListener('click', handleModeClick);
 }
 
-if(saveBtn) {
+if (saveBtn) {
   saveBtn.addEventListener('click', handleSaveClick);
 }
