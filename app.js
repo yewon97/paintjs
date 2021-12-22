@@ -53,7 +53,7 @@ const handleColorClick = (e) => {
 
 const handleGradientClick = (e) => {
   const gradient = e.target.style.background;
-  console.log(gradient);
+  // console.log(gradient);
   let grd = ctx.createLinearGradient(0, 0, CANVAS_SIZE, CANVAS_SIZE);
 
   const stringColor1 = gradient
