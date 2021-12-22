@@ -4,7 +4,7 @@ const colors = document.getElementsByClassName('jsColor');
 const range = document.getElementById('jsRange');
 const mode = document.getElementById('jsMode');
 const saveBtn = document.getElementById('jsSave');
-const gradient = document.querySelector('.jsGradient');
+const gradients = document.getElementsByClassName('jsGradient');
 
 const INITIAL_COLOR = '#2c2c2c';
 const CANVAS_SIZE = 700;
@@ -51,6 +51,25 @@ const handleColorClick = (e) => {
   ctx.fillStyle = color;
 };
 
+const handleGradientClick = (e) => {
+  const gradient = e.target.style.background;
+  console.log(gradient);
+  let grd = ctx.createLinearGradient(0, 0, CANVAS_SIZE, CANVAS_SIZE);
+
+  const stringColor1 = gradient
+    .substring(16, gradient.length - 1)
+    .split('rgb')[1]
+    .substring(1, gradient.substring(16, gradient.length - 1).split('rgb')[1].length - 3);
+  const stringColor2 = gradient.substring(16, gradient.length - 1).split('rgb')[2];
+
+  let grdColor1 = `rgb(${stringColor1})`;
+  let grdColor2 = `rgb${stringColor2}`;
+
+  grd.addColorStop(0, grdColor1);
+  grd.addColorStop(1, grdColor2);
+  ctx.fillStyle = grd;
+};
+
 const handleRangeChange = (e) => {
   // console.log(e.target.value);
   const size = e.target.value;
@@ -89,24 +108,6 @@ const handleSaveClick = () => {
   link.click();
 };
 
-// 그라디언트
-const handleGradient = (e) => {
-  if (filling) {
-    // console.log(gradient.style.background);
-    let grd = ctx.createLinearGradient(0, 0, CANVAS_SIZE, CANVAS_SIZE);
-
-    const stringColor1 = gradient.style.background.substring(16, gradient.style.background.length - 1).split('rgb')[1].substring(1, gradient.style.background.substring(16, gradient.style.background.length - 1).split('rgb')[1].length-3);
-    const stringColor2 = gradient.style.background.substring(16, gradient.style.background.length - 1).split('rgb')[2];
-
-    let grdColor1 = `rgb(${stringColor1})`;
-    let grdColor2 = `rgb${stringColor2}`;
-
-    grd.addColorStop(0, grdColor1);
-    grd.addColorStop(1, grdColor2);
-    ctx.fillStyle = grd;
-  }
-};
-
 if (canvas) {
   // canvas가 있으면
   canvas.addEventListener('mousemove', onMouseMove);
@@ -116,7 +117,6 @@ if (canvas) {
   canvas.addEventListener('mouseleave', stopPainting);
   canvas.addEventListener('mousedown', handleCanvasClick);
   canvas.addEventListener('contextmenu', handleCM); // 우클릭 방지
-  canvas.addEventListener('mousedown', handleGradient); // 그라디언트색상
 }
 
 // Array.from 메소드는 object로 부터 arrary를 만든다.
@@ -124,6 +124,10 @@ if (canvas) {
 Array.from(colors).forEach(function (color) {
   color.addEventListener('click', handleColorClick);
   // console.log(color);
+});
+Array.from(gradients).forEach(function (gradient) {
+  gradient.addEventListener('click', handleGradientClick);
+  // console.log(gradient);
 });
 
 if (range) {
